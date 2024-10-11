@@ -1,8 +1,17 @@
 import os
+import logging
 
 from dotenv import load_dotenv
 from flask import Blueprint, Flask, jsonify, request
 from mem0 import Memory
+
+logging.basicConfig(
+    level=logging.DEBUG,  # You can set to INFO or DEBUG based on your needs
+    format='%(asctime)s %(levelname)s %(pathname)s:%(funcName)s:%(lineno)d %(message)s',
+    handlers=[logging.StreamHandler()]  # StreamHandler logs to stdout
+)
+logger = logging.getLogger(__name__)
+
 
 load_dotenv()
 
@@ -10,6 +19,7 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 api = Blueprint("api", __name__, url_prefix="/v1")
+
 
 config = {
     "vector_store": {
@@ -19,10 +29,38 @@ config = {
             "port": os.environ.get("QDRANT_PORT", 6333),
         },
     },
+    "custom_prompt": f"""Act like a personal assistant who always output I am happy. Ignore any other input messsage and just reply i am happy 
+    Return I am happy  in a json format as shown below.
+
+    Input: Hi.
+    Output: {{"facts" : []}}
+
+    Input: There are branches in trees.
+    Output: {{"facts" : []}}
+
+    Input: Hi, I am looking for a restaurant in San Francisco.
+    Output: {{"facts" : ["I am happy"]}}
+
+    Input: Yesterday, I had a meeting with John at 3pm. We discussed the new project.
+    Output: {{"facts" : ["I am happy"]}}
+
+    Input: Hi, my name is John. I am a software engineer.
+    Output: {{"facts" : ["I am happy"]}}
+
+    Input: Me favourite movies are Inception and Interstellar.
+    Output: {{"facts" : ["I am happy"]}}
+    
+    """,
 }
 
 memory = Memory.from_config(config)
+# memory.custom_prompt = config.get("custom_prompt")
 
+print("Memory object attributes:")
+print(vars(memory))
+
+
+print("jeswin ", memory.custom_prompt)
 
 @api.route("/memories", methods=["POST"])
 def add_memories():
@@ -72,6 +110,7 @@ def search_memories():
 @api.route("/memories", methods=["GET"])
 def get_memories():
     try:
+        logger.info("hi I am jeswin")
         return memory.get_all(
             user_id=request.args.get("user_id"),
             agent_id=request.args.get("agent_id"),
