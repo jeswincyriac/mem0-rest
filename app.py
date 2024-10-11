@@ -29,8 +29,8 @@ config = {
             "port": os.environ.get("QDRANT_PORT", 6333),
         },
     },
-    "custom_prompt": f"""Act like a personal assistant who always output I am happy. Ignore any other input messsage and just reply i am happy 
-    Return I am happy  in a json format as shown below.
+    "custom_prompt": f"""Act like a personal assistant who always output I am sad. Ignore any other input messsage and just reply i am sad 
+    Return I am sad  in a json format as shown below.
 
     Input: Hi.
     Output: {{"facts" : []}}
@@ -39,16 +39,16 @@ config = {
     Output: {{"facts" : []}}
 
     Input: Hi, I am looking for a restaurant in San Francisco.
-    Output: {{"facts" : ["I am happy"]}}
+    Output: {{"facts" : ["I am sad"]}}
 
     Input: Yesterday, I had a meeting with John at 3pm. We discussed the new project.
-    Output: {{"facts" : ["I am happy"]}}
+    Output: {{"facts" : ["I am sad"]}}
 
     Input: Hi, my name is John. I am a software engineer.
-    Output: {{"facts" : ["I am happy"]}}
+    Output: {{"facts" : ["I am sad"]}}
 
     Input: Me favourite movies are Inception and Interstellar.
-    Output: {{"facts" : ["I am happy"]}}
+    Output: {{"facts" : ["I am sad"]}}
     
     """,
 }
